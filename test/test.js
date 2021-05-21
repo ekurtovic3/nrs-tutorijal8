@@ -3,19 +3,48 @@ const chaiHttp = require('chai-http');
 const app = require('../server');
 chai.should();
 chai.use(chaiHttp);
+const db = require('.././db/db');
 
 
 describe('Testiranje servera', function () {
-    let grad = { id: 5, naziv: 'Tokyo', broj_stanovnika: 50 };
+    let grad = { id: 10, naziv: 'Lisabon', broj_stanovnika: 7000000 };
+    let grad2 = { id: 50, naziv: 'Zagreb', broj_stanovnika: 100 };
 
+    before(function () {
+        db.gradovi.create({id: 10, naziv: 'Dortmund',broj_stanovnika: 100000}),
+        db.gradovi.create({id: 11, naziv: 'Leipzig',broj_stanovnika: 200000}),
+        db.gradovi.create({id: 15, naziv: 'Munchen',broj_stanovnika: 300000})
+    });
+
+    beforeEach(function () {
+        chai.request(app)
+        .post('/grad')
+        .send({id:5,naziv: 'Tokyo', broj_stanovnika: 500000})
+        .end((err,res)=>{
+            brojac = res.body.id;
+        });
+    });
+
+    afterEach(function () {
+        chai.request(app)
+        .delete('gradovi/5')
+        .end()
+    });
+
+
+    after(function () {
+        chai.request(app)
+        .delete('gradovi/deleteAll')
+        .end()
+    });
    
-    describe('POST zahtjev', () => {
+   describe('POST zahtjev', () => {
 
         it('Api za /grad', (done) => {
 
             chai.request(app)
                 .post('/grad')
-                .send(grad)
+                .send(grad2)
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
@@ -25,20 +54,20 @@ describe('Testiranje servera', function () {
         });
     });
 
-    describe('GET zahtjev ', () => {
+  /*  describe('GET zahtjev ', () => {
         it('Vraca grad sa proslijedenim idom', (done) => {
             chai.request(app)
-                .get('/gradovi/' + grad.id)
+                .get('/gradovi/1')
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
-                    res.body.should.have.property('naziv').eql('Tokyo');
+                    res.body.should.have.property('naziv').eql('Dortmund');
                     done();
                 });
         });
 
     });
-
+*/
 
     describe('PUT ', () => {
         it('Ubacivanje grada u bazu', (done) => {

@@ -43,6 +43,11 @@ app.put('/gradovi/:id', function (req, res) {
         broj_stanovnika: v.broj_stanovnika,
     }, { where: { id: req.params.id } }).then(() => { res.json({ status: 'Updated!' }) })
 });
+
+app.delete('/gradovi/deleteAll', (req, res) => base.gradovi.findAll.destroy({
+
+}).then(() => { res.json({ status: 'All deleted' }) }));
+
  var server=app.listen(port, () => {
     console.log(`Server je pokrenut na http://localhost:${port}`)
 })

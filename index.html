@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Tutorijal 8</title>
+    <script>
+        window.onload = function () {
+            fetch('/gradovi', { method: 'get' }).then((response) => {
+                const json = response.json();
+                if (response.ok) {
+                    return json;
+                }
+                return Promise.reject(new Error('Something went wrong.'));
+            })
+                .then((response) => {
+                    var list="";
+                    for (var i = 0; i < response.length; i++) {
+                        list += "<li>"+ response[i].naziv + "</li>"
+                    }
+                    document.getElementById('gradovi').innerHTML = list;
+
+                }).catch((error) => {
+                    document.getElementById('error').innerHTML = error && error.message || 'Something else went wrong.';
+                });
+        };
+    </script>
+</head>
+
+<body>
+    <h1>Gradovi:</h1>
+    <ul id="gradovi"></ul>
+    <p id="error"></p>
+</body>
+
+</html>
